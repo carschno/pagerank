@@ -16,7 +16,7 @@ import breeze.linalg.sum
 object PageRank {
 
   final val EPSILON = 0.00001
-  private final val BETA = 0.8
+  private final val BETA_DEFAULT = 0.8
   object Method extends Enumeration {
     val ITERATIVE, MATRIX = Value
   }
@@ -24,8 +24,8 @@ object PageRank {
   /**
    * @param location  location of the input file
    * @param nPages  total number of pages (nodes)
-   * @param nLines: the maximum number of lines to read from input file
-   * @param method: the method to use (iterative vs. matrix-based)
+   * @param nLines the maximum number of lines to read from input file
+   * @param method the method to use (iterative vs. matrix-based)
    * @return a vector defining the PageRank value for each page/node
    */
   def pagerank(location: String, nPages: Int, nLines: Int = Int.MaxValue,
@@ -54,7 +54,7 @@ object PageRank {
    * @return a vector defining the PageRank value for each page/node
    */
   @deprecated("Use computeRMatrix() instead.")
-  def computeRIterative(m: CSCMatrix[Double], r: DenseVector[Double], beta: Double = 0.8, counter: Int = 1): DenseVector[Double] = {
+  def computeRIterative(m: CSCMatrix[Double], r: DenseVector[Double], beta: Double = BETA_DEFAULT, counter: Int = 1): DenseVector[Double] = {
     println("Iteration: " + counter)
 
     /* compute r' */
@@ -83,7 +83,7 @@ object PageRank {
    * @param counter counts the number of iterations
    * @return a vector defining the PageRank value for each page/node
    */
-  def computeRMatrix(m: CSCMatrix[Double], r: DenseVector[Double], beta: Double = 0.8, counter: Int = 1): DenseVector[Double] = {
+  def computeRMatrix(m: CSCMatrix[Double], r: DenseVector[Double], beta: Double = BETA_DEFAULT, counter: Int = 1): DenseVector[Double] = {
     println("Iteration: " + counter)
     val rNew = (m * beta) * r + ((1 - beta) / m.cols)
 
@@ -101,7 +101,7 @@ object PageRank {
    * @param b the second vector
    * @return the cosine distance between the two vectors
    */
-  def cosineDistance(a: Vector[Double], b: Vector[Double]): Double = {
+  private def cosineDistance(a: Vector[Double], b: Vector[Double]): Double = {
     1 - (a dot b) / (norm(a, 2) * norm(b, 2))
   }
 
@@ -112,7 +112,7 @@ object PageRank {
    * @param b the second vector
    * @return the Manhatten distance between the two vectors
    */
-  def manhattanDistance(a: Vector[Double], b: Vector[Double]): Double = {
+  private def manhattanDistance(a: Vector[Double], b: Vector[Double]): Double = {
     (a - b).norm(1)
   }
 
