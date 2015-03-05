@@ -31,7 +31,7 @@ object PageRank {
   def pagerank(location: String, nPages: Int, nLines: Int = Int.MaxValue,
     method: Method.Value = PageRank.Method.ITERATIVE): DenseVector[Double] = {
     val m = stochasticMatrix(adjMatrix(location, nPages, nLines))
-    val rInitial = new DenseVector(Array.fill(nPages)(1d / nPages))
+    val rInitial = DenseVector.ones[Double](nPages) :/ nPages.toDouble
 
     if (method == Method.ITERATIVE) {
       println("Using iterative method.")
@@ -46,6 +46,7 @@ object PageRank {
 
   /**
    * Iterative implementation of PageRank
+   *
    * @param m the stochastic adjacency matrix
    * @param r the initial vector R holding the PageRank values for each node/page
    * @param beta the teleport probability
@@ -75,6 +76,7 @@ object PageRank {
 
   /**
    * Matrix-based implementation of PageRank
+   *
    * @param m the stochastic adjacency matrix
    * @param r the initial vector R holding the PageRank values for each node/page
    * @param beta the teleport probability
@@ -96,6 +98,11 @@ object PageRank {
     m.rowIndices.slice(m.colPtrs(i), m.colPtrs(i + 1))
   }
 
+  /**
+   * @param i the column number
+   * @param a CSCMatrix
+   * @return the number of outgoing links with regard to the given column
+   */
   def outDegree(i: Int, m: CSCMatrix[Double]): Int = {
     m.colPtrs(i + 1) - m.colPtrs(i)
   }
@@ -134,18 +141,23 @@ object PageRank {
     builder.result
   }
 
-  /** divide each cell by the sum of its column */
+  /**
+   *  Divide each cell by the number of outgoing links, i.e. the number of ones in the same column.
+   *  @param m a CSCMatrix expected to contain ones and zeroes
+   *  @return a column-stochastic CSCMatrix, i.e. each column adding up to 1.
+   */
   def stochasticMatrix(m: CSCMatrix[Double]): CSCMatrix[Double] = {
-    val allSums = colSums(m)
-    m.activeIterator.foreach(x => m.update(x._1._1, x._1._2, x._2 / allSums(x._1._2)))
+    m.activeIterator.foreach(cell => m.update(cell._1, cell._2 / outDegree(cell._1._2, m)))
     m
   }
 
   /** Return the sum over all values in a column */
+  @deprecated("No longer used.")
   def colSum(i: Int, m: CSCMatrix[Double]): Double = {
     m(0 to m.rows - 1, i to i).sum
   }
 
+  @deprecated("No longer used.")
   def colSums(m: CSCMatrix[Double]): Vector[Double] = {
     val sums = SparseVector.zeros[Double](m.cols)
     m.activeIterator.foreach { x => sums(x._1._2) += x._2 }
