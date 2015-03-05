@@ -17,6 +17,13 @@ object PageRank {
     val ITERATIVE, MATRIX = Value
   }
 
+  /**
+   * @param location  location of the input file
+   * @param nPages  total number of pages (nodes)
+   * @param nLines: the maximum number of lines to read from input file
+   * @param method: the method to use (iterative vs. matrix-based)
+   * @return a vector defining the PageRank value for each page/node
+   */
   def pagerank(location: String, nPages: Int, nLines: Int = Int.MaxValue,
     method: Method.Value = PageRank.Method.ITERATIVE): DenseVector[Double] = {
     val m = stochasticMatrix(adjMatrix(location, nPages, nLines))
@@ -53,10 +60,10 @@ object PageRank {
       rNew
   }
 
-  def rMatrix(m: CSCMatrix[Double], r: DenseVector[Double], beta: Double = 0.8, counter: Int = 1): DenseVector[Double] = {
+  private def rMatrix(m: CSCMatrix[Double], r: DenseVector[Double], beta: Double = 0.8, counter: Int = 1): DenseVector[Double] = {
     println("Iteration: " + counter)
     val rNew = (m * beta) * r + ((1 - beta) / m.cols)
-    
+
     /* recursion */
     if (manhattanDistance(rNew, r) > EPSILON)
       rMatrix(m, rNew, beta, counter + 1)
