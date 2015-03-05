@@ -23,7 +23,7 @@ object PageRank {
     val rInitial = new DenseVector(Array.fill(nPages)(1d / nPages))
 
     if (method == Method.ITERATIVE) {
-      println("Using iterative/recursive method.")
+      println("Using iterative method.")
       rIterative(m, rInitial)
     } else if (method == Method.MATRIX) {
       println("Using matrix-based method.")
@@ -56,9 +56,10 @@ object PageRank {
   def rMatrix(m: CSCMatrix[Double], r: DenseVector[Double], beta: Double = 0.8, counter: Int = 1): DenseVector[Double] = {
     println("Iteration: " + counter)
     val rNew = (m * beta) * r + ((1 - beta) / m.cols)
+    
     /* recursion */
     if (manhattanDistance(rNew, r) > EPSILON)
-      rIterative(m, rNew, beta, counter + 1)
+      rMatrix(m, rNew, beta, counter + 1)
     else
       rNew
   }
