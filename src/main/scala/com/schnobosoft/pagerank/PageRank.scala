@@ -14,14 +14,14 @@ object PageRank {
   final val EPSILON = 0.00001
   private final val BETA = 0.8
 
-  def pagerankG(location: String, nPages: Int, nLines: Int = Int.MaxValue): DenseVector[Double] = {
+  def pagerankIterative(location: String, nPages: Int, nLines: Int = Int.MaxValue): DenseVector[Double] = {
     val m = stochasticMatrix(adjMatrix(location, nPages, nLines))
     val rInitial = new DenseVector(Array.fill(nPages)(1d / nPages))
 
-    newR(m, rInitial)
+    newRIterative(m, rInitial)
   }
 
-  private def newR(m: CSCMatrix[Double], r: DenseVector[Double], beta: Double = 0.8, counter: Int = 1): DenseVector[Double] = {
+  private def newRIterative(m: CSCMatrix[Double], r: DenseVector[Double], beta: Double = 0.8, counter: Int = 1): DenseVector[Double] = {
     println("Iteration: " + counter)
     val rNew = DenseVector.zeros[Double](r.size);
 
@@ -38,7 +38,7 @@ object PageRank {
 
     /* recursion */
     if (manhattanDistance(rNew, r) > EPSILON)
-      newR(m, rNew, beta, counter + 1)
+      newRIterative(m, rNew, beta, counter + 1)
     else
       rNew
   }
