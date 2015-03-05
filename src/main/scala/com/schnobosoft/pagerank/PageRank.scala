@@ -8,6 +8,10 @@ import breeze.linalg.norm
 import breeze.linalg.sum
 import breeze.linalg.SparseVector
 
+/**
+ * Implementation of the PageRank algorithm using Scala and Breeze.
+ * @author Carsten Schnober
+ */
 object PageRank {
   private final val COMMENT_MARKER = "#"
   private final val COLUMN_SEPARATOR = "\t"
@@ -40,11 +44,19 @@ object PageRank {
     }
   }
 
+  /**
+   * Iterative implementation of PageRank
+   * @param m the stochastic adjacency matrix
+   * @param r the initial vector R holding the PageRank values for each node/page
+   * @param beta the teleport probability
+   * @param counter counts the number of iterations
+   * @return a vector defining the PageRank value for each page/node
+   */
   private def rIterative(m: CSCMatrix[Double], r: DenseVector[Double], beta: Double = 0.8, counter: Int = 1): DenseVector[Double] = {
     println("Iteration: " + counter)
-    val rNew = DenseVector.zeros[Double](r.size);
 
     /* compute r' */
+    val rNew = DenseVector.zeros[Double](r.size);
     for (j <- Range(0, r.length)) {
       incoming(j, m).foreach { i => rNew(j) += beta * (r(i) / outDegree(i, m)) }
     }
@@ -60,6 +72,14 @@ object PageRank {
       rNew
   }
 
+  /**
+   * Matrix-based implementation of PageRank
+   * @param m the stochastic adjacency matrix
+   * @param r the initial vector R holding the PageRank values for each node/page
+   * @param beta the teleport probability
+   * @param counter counts the number of iterations
+   * @return a vector defining the PageRank value for each page/node
+   */
   private def rMatrix(m: CSCMatrix[Double], r: DenseVector[Double], beta: Double = 0.8, counter: Int = 1): DenseVector[Double] = {
     println("Iteration: " + counter)
     val rNew = (m * beta) * r + ((1 - beta) / m.cols)
