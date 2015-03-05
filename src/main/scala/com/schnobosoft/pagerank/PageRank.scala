@@ -100,6 +100,7 @@ object PageRank {
     m.colPtrs(i + 1) - m.colPtrs(i)
   }
 
+  @deprecated("Used in iterative approach only.")
   def incoming(i: Int, m: CSCMatrix[Double]): Seq[Int] = {
     m.rowIndices.toList
       .zipWithIndex.filter { _._1 == i } // tuples with value matching i (row)
@@ -107,6 +108,7 @@ object PageRank {
       .map { x => x.get._2 - 1 }
   }
 
+  @deprecated("Used in iterative approach only.")
   def inDegree(i: Int, m: CSCMatrix[Double]): Int = {
     m.rowIndices.toList.count { _ == i }
   }
