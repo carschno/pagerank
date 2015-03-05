@@ -94,19 +94,33 @@ object PageRank {
       rNew
   }
 
+  /**
+   * Get the rows containing non-zero elements in a sparse matrix column.
+   * @param i the column index
+   * @param a CSCMatrix
+   * @return an array of row indices for the given column i.
+   */
   def outgoing(i: Int, m: CSCMatrix[Double]): Array[Int] = {
     m.rowIndices.slice(m.colPtrs(i), m.colPtrs(i + 1))
   }
 
   /**
+   * Compute the number of non-zero elements in a sparse matrix column.
    * @param i the column number
-   * @param a CSCMatrix
+   * @param m a CSCMatrix
    * @return the number of outgoing links with regard to the given column
    */
   def outDegree(i: Int, m: CSCMatrix[Double]): Int = {
     m.colPtrs(i + 1) - m.colPtrs(i)
   }
 
+  /**
+   * Get the columns indices containing non-zero elements in a sparse matrix row.
+   *
+   * @param i the row index
+   * @param m a CSCMatrix
+   * @return a Sequence of column indizes containing non-zero elements in a row
+   */
   @deprecated("Used in iterative approach only.")
   def incoming(i: Int, m: CSCMatrix[Double]): Seq[Int] = {
     m.rowIndices.toList
@@ -115,11 +129,26 @@ object PageRank {
       .map { x => x.get._2 - 1 }
   }
 
+  /**
+   * Compute the number of non-zero elements in a sparse matrix row.
+   *
+   * @param i the row index
+   * @param m a CSCMatrix
+   * @return the number of columns containing non-zero elements in the given row.
+   */
   @deprecated("Used in iterative approach only.")
   def inDegree(i: Int, m: CSCMatrix[Double]): Int = {
     m.rowIndices.toList.count { _ == i }
   }
 
+  /**
+   * Get an iterator over the lines of a file. Each line is expected to contain a pair of two integers,
+   * separated by a TAB. Comments are ignored. The iterator thus returns tuples of integers.
+   *
+   * @param location  the location of the input file
+   * @param nLines  if given, read this number of lines only
+   * @return an iterator over tuples of two integers
+   */
   private def fileIterator(location: String, nLines: Int = Int.MaxValue): Iterator[(Int, Int)] = {
     iteratorHead(fromFile(location).getLines
       .filter { !_.startsWith(COMMENT_MARKER) }, nLines) // ignore comments
@@ -127,13 +156,28 @@ object PageRank {
       .map { (x => (Integer.parseInt(x(0)), Integer.parseInt(x(1)))) } // convert to Integers
   }
 
-  def iteratorHead[T](iter: Iterator[T], n: Int): Iterator[T] = {
+  /**
+   * Reduce an iterator of definite size to its n leading entries. If the iterator does not have a
+   * definite size or its size is smaller than the given n, return it unchanged.
+   *
+   * @param iter an iterator
+   * @param n the maximum number of entries to return for the iterator
+   * @return an iterator with the given number of entries max.
+   */
+  private def iteratorHead[T](iter: Iterator[T], n: Int): Iterator[T] = {
     if (iter.hasDefiniteSize && iter.size < n)
       iter
     else
       iter.take(n)
   }
 
+  /**
+   * Build a sparse matrix from a file expected to contain a pair of two integers in each line.
+   *
+   * @param location  the input file location
+   * @param dimensions  the total number of nodes in the input data, i.e. the dimensionality of the resulting matrix
+   * @param nLines  if given, read the first n lines of the input data only
+   */
   def adjMatrix(location: String, dimensions: Int, nLines: Int = Int.MaxValue): CSCMatrix[Double] = {
     val builder = new CSCMatrix.Builder[Double](dimensions, dimensions)
     iteratorHead(fileIterator(location, nLines), nLines)
@@ -157,6 +201,7 @@ object PageRank {
     m(0 to m.rows - 1, i to i).sum
   }
 
+  /** Get the sums of each column and return as a sparse vector */
   @deprecated("No longer used.")
   def colSums(m: CSCMatrix[Double]): Vector[Double] = {
     val sums = SparseVector.zeros[Double](m.cols)
@@ -164,10 +209,24 @@ object PageRank {
     sums
   }
 
+  /**
+   * Compute the cosine distance between two vectors, i.e. 1 - the cosine similarity.
+   *
+   * @param a the first vector
+   * @param b the second vector
+   * @return the cosine distance between the two vectors
+   */
   private def cosineDistance(a: Vector[Double], b: Vector[Double]): Double = {
     1 - (a dot b) / (norm(a, 2) * norm(b, 2))
   }
 
+  /**
+   * Compute the Manhattan distance between two vectors.
+   *
+   * @param a the first vector
+   * @param b the second vector
+   * @return the Manhatten distance between the two vectors
+   */
   private def manhattanDistance(a: Vector[Double], b: Vector[Double]): Double = {
     (a - b).norm(1)
   }
