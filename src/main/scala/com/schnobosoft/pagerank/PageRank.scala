@@ -52,6 +52,7 @@ object PageRank {
    * @param counter counts the number of iterations
    * @return a vector defining the PageRank value for each page/node
    */
+  @deprecated("Use rMatrix instead.")
   private def rIterative(m: CSCMatrix[Double], r: DenseVector[Double], beta: Double = 0.8, counter: Int = 1): DenseVector[Double] = {
     println("Iteration: " + counter)
 
