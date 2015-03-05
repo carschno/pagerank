@@ -13,13 +13,24 @@ object PageRank {
   private final val COLUMN_SEPARATOR = "\t"
   final val EPSILON = 0.00001
   private final val BETA = 0.8
+  object Method extends Enumeration {
+    val ITERATIVE, MATRIX = Value
+  }
 
-  def pagerank(location: String, nPages: Int, nLines: Int = Int.MaxValue): DenseVector[Double] = {
+  def pagerank(location: String, nPages: Int, nLines: Int = Int.MaxValue,
+    method: Method.Value = PageRank.Method.ITERATIVE): DenseVector[Double] = {
     val m = stochasticMatrix(adjMatrix(location, nPages, nLines))
     val rInitial = new DenseVector(Array.fill(nPages)(1d / nPages))
 
-    //    rIterative(m, rInitial)
-    rMatrix(m, rInitial)
+    if (method == Method.ITERATIVE) {
+      println("Using iterative/recursive method.")
+      rIterative(m, rInitial)
+    } else if (method == Method.MATRIX) {
+      println("Using matrix-based method.")
+      rMatrix(m, rInitial)
+    } else {
+      throw new IllegalArgumentException()
+    }
   }
 
   private def rIterative(m: CSCMatrix[Double], r: DenseVector[Double], beta: Double = 0.8, counter: Int = 1): DenseVector[Double] = {
@@ -33,9 +44,7 @@ object PageRank {
 
     /* re-insert r' */
     val S = sum(rNew)
-    for (j <- Range(0, r.length)) {
-      rNew(j) += (1 - S) / rNew.size
-    }
+    rNew :+= (1 - S) / rNew.size
 
     /* recursion */
     if (manhattanDistance(rNew, r) > EPSILON)

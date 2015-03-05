@@ -18,17 +18,24 @@ class PageRankTest {
   @Test
   def pageRankTest {
     var expepectedR = DenseVector[Double](7d / 33d, 5d / 33d, 21d / 33d)
-    var r = PageRank.pagerank(location2, 3)
+    var r = PageRank.pagerank(location2, 3, method = PageRank.Method.ITERATIVE)
     assertArrayEquals(expepectedR.data, r.data, PageRank.EPSILON)
   }
 
   @Test
   def pageRankTestNLines {
     var expepectedR = DenseVector[Double](7d / 33d, 5d / 33d, 21d / 33d)
-    var r = PageRank.pagerank(location2, 3, 5)
+    var r = PageRank.pagerank(location2, 3, 5, PageRank.Method.ITERATIVE)
     assertArrayEquals(expepectedR.data, r.data, PageRank.EPSILON)
   }
 
+  @Test
+  def pageRankTestMatrix {
+    var expepectedR = DenseVector[Double](7d / 33d, 5d / 33d, 21d / 33d)
+    var r = PageRank.pagerank(location2, 3, 5, PageRank.Method.MATRIX)
+    assertArrayEquals(expepectedR.data, r.data, PageRank.EPSILON)
+  }
+  
   @Test
   def iteratorMaxTest1 {
     val expected = 5
