@@ -164,7 +164,7 @@ object PageRank {
    * @param n the maximum number of entries to return for the iterator
    * @return an iterator with the given number of entries max.
    */
-  private def iteratorHead[T](iter: Iterator[T], n: Int): Iterator[T] = {
+  def iteratorHead[T](iter: Iterator[T], n: Int): Iterator[T] = {
     if (iter.hasDefiniteSize && iter.size < n)
       iter
     else
