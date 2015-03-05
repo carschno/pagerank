@@ -35,7 +35,7 @@ class PageRankTest {
     var r = PageRank.pagerank(location2, 3, 5, PageRank.Method.MATRIX)
     assertArrayEquals(expepectedR.data, r.data, PageRank.EPSILON)
   }
-  
+
   @Test
   def iteratorMaxTest1 {
     val expected = 5
@@ -84,7 +84,6 @@ class PageRankTest {
     val expectedM = builder.result()
     val m = PageRank.stochasticMatrix(PageRank.adjMatrix(location, nPages))
     assertArrayEquals(expectedM.data, m.data, PageRank.EPSILON)
-
     Range(0, 2).foreach { col => assertEquals(1.0, PageRank.colSum(col, m), 0.001) }
   }
 
@@ -100,7 +99,6 @@ class PageRankTest {
     val m = PageRank.stochasticMatrix(PageRank.adjMatrix(location2, nPages))
     assertArrayEquals(expectedM.data, m.data, PageRank.EPSILON)
     Range(0, 2).foreach { col => assertEquals(1.0, PageRank.colSum(col, m), 0.001) }
-
   }
 
   @Test
@@ -166,11 +164,11 @@ class PageRankTest {
   }
 
   @Test
-  def allSumsTest1 {
-    val expected = DenseVector[Double](2, 2, 1)
+  def colSumsTest1 {
+    val expected = Array[Double](2, 2, 1)
     val m = PageRank.adjMatrix(location, nPages)
     val sums = PageRank.colSums(m)
-    assertArrayEquals(expected.data, sums.values.iterator.toArray, 0.001)
+    assertArrayEquals(expected, sums.values.iterator.toArray, 0.001)
   }
 
   @Test

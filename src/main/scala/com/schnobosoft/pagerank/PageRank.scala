@@ -29,7 +29,7 @@ object PageRank {
    * @return a vector defining the PageRank value for each page/node
    */
   def pagerank(location: String, nPages: Int, nLines: Int = Int.MaxValue,
-    method: Method.Value = PageRank.Method.ITERATIVE): DenseVector[Double] = {
+    method: Method.Value = PageRank.Method.MATRIX): DenseVector[Double] = {
     val m = stochasticMatrix(adjMatrix(location, nPages, nLines))
     val rInitial = new DenseVector(Array.fill(nPages)(1d / nPages))
 
@@ -92,14 +92,17 @@ object PageRank {
       rNew
   }
 
+  @deprecated("Used in iterative approach only.")
   def outgoing(i: Int, m: CSCMatrix[Double]): Array[Int] = {
     m.rowIndices.slice(m.colPtrs(i), m.colPtrs(i + 1))
   }
 
+  @deprecated("Used in iterative approach only.")
   def outDegree(i: Int, m: CSCMatrix[Double]): Int = {
     m.colPtrs(i + 1) - m.colPtrs(i)
   }
 
+  @deprecated("Used in iterative approach only.")
   def incoming(i: Int, m: CSCMatrix[Double]): Seq[Int] = {
     m.rowIndices.toList
       .zipWithIndex.filter { _._1 == i } // tuples with value matching i (row)
@@ -107,6 +110,7 @@ object PageRank {
       .map { x => x.get._2 - 1 }
   }
 
+  @deprecated("Used in iterative approach only.")
   def inDegree(i: Int, m: CSCMatrix[Double]): Int = {
     m.rowIndices.toList.count { _ == i }
   }
@@ -140,10 +144,12 @@ object PageRank {
   }
 
   /** Return the sum over all values in a column */
+  @deprecated("No longer used at all.")
   def colSum(i: Int, m: CSCMatrix[Double]): Double = {
     m(0 to m.rows - 1, i to i).sum
   }
 
+  @deprecated("Used in iterative approach only.")
   def colSums(m: CSCMatrix[Double]): Vector[Double] = {
     val sums = SparseVector.zeros[Double](m.cols)
     m.activeIterator.foreach { x => sums(x._1._2) += x._2 }

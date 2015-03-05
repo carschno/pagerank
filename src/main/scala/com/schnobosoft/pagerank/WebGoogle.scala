@@ -7,7 +7,7 @@ object WebGoogle extends App {
   val nPages = 916427
   val location = "/home/schnober/corpora/web-Google.txt"
 
-  val r = PageRank.pagerank(location, nPages, nLines, PageRank.Method.MATRIX)
+  val r = PageRank.pagerank(location, nPages, method = PageRank.Method.MATRIX)
 
   println(r.slice(0, 10))
 }
