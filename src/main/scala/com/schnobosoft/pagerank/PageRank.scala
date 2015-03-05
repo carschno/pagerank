@@ -14,14 +14,15 @@ object PageRank {
   final val EPSILON = 0.00001
   private final val BETA = 0.8
 
-  def pagerankIterative(location: String, nPages: Int, nLines: Int = Int.MaxValue): DenseVector[Double] = {
+  def pagerank(location: String, nPages: Int, nLines: Int = Int.MaxValue): DenseVector[Double] = {
     val m = stochasticMatrix(adjMatrix(location, nPages, nLines))
     val rInitial = new DenseVector(Array.fill(nPages)(1d / nPages))
 
-    newRIterative(m, rInitial)
+    //    rIterative(m, rInitial)
+    rMatrix(m, rInitial)
   }
 
-  private def newRIterative(m: CSCMatrix[Double], r: DenseVector[Double], beta: Double = 0.8, counter: Int = 1): DenseVector[Double] = {
+  private def rIterative(m: CSCMatrix[Double], r: DenseVector[Double], beta: Double = 0.8, counter: Int = 1): DenseVector[Double] = {
     println("Iteration: " + counter)
     val rNew = DenseVector.zeros[Double](r.size);
 
@@ -38,7 +39,17 @@ object PageRank {
 
     /* recursion */
     if (manhattanDistance(rNew, r) > EPSILON)
-      newRIterative(m, rNew, beta, counter + 1)
+      rIterative(m, rNew, beta, counter + 1)
+    else
+      rNew
+  }
+
+  def rMatrix(m: CSCMatrix[Double], r: DenseVector[Double], beta: Double = 0.8, counter: Int = 1): DenseVector[Double] = {
+    println("Iteration: " + counter)
+    val rNew = (m * beta) * r + ((1 - beta) / m.cols)
+    /* recursion */
+    if (manhattanDistance(rNew, r) > EPSILON)
+      rIterative(m, rNew, beta, counter + 1)
     else
       rNew
   }
@@ -108,4 +119,5 @@ object PageRank {
   private def manhattanDistance(a: Vector[Double], b: Vector[Double]): Double = {
     (a - b).norm(1)
   }
+
 }

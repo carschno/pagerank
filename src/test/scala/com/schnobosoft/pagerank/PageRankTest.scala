@@ -18,14 +18,14 @@ class PageRankTest {
   @Test
   def pageRankTest {
     var expepectedR = DenseVector[Double](7d / 33d, 5d / 33d, 21d / 33d)
-    var r = PageRank.pagerankIterative(location2, 3)
+    var r = PageRank.pagerank(location2, 3)
     assertArrayEquals(expepectedR.data, r.data, PageRank.EPSILON)
   }
 
   @Test
   def pageRankTestNLines {
     var expepectedR = DenseVector[Double](7d / 33d, 5d / 33d, 21d / 33d)
-    var r = PageRank.pagerankIterative(location2, 3, 5)
+    var r = PageRank.pagerank(location2, 3, 5)
     assertArrayEquals(expepectedR.data, r.data, PageRank.EPSILON)
   }
 
