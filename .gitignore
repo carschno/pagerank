@@ -17,3 +17,8 @@ project/plugins/project/
 .worksheet
 
 target/
+/.settings/
+/project/
+/.cache
+/.classpath
+/.project
