@@ -24,8 +24,8 @@ object FileUtils {
   }
 
   /**
-   * Reduce an iterator of definite size to its n leading entries. If the iterator does not have a
-   * definite size or its size is smaller than the given n, return it unchanged.
+   * Reduce an iterator of definite size to its n leading entries. If the iterator does have a
+   * definite size and its size is smaller than the given n, return it unchanged.
    *
    * @param iter an iterator
    * @param n the maximum number of entries to return for the iterator
