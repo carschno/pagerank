@@ -59,7 +59,7 @@ object PageRank {
 
     /* compute r' */
     val rNew = DenseVector.zeros[Double](r.size);
-    for (j <- Range(0, r.length)) {
+    for (j <- 0 until r.length) {
       MatrixUtils.incoming(j, m).foreach { i => rNew(j) += beta * (r(i) / MatrixUtils.outDegree(i, m)) }
     }
 
