@@ -1,10 +1,9 @@
 package com.schnobosoft.pagerank
 
-import scala.io.Source.fromFile
+import scala.Range
 
 import breeze.linalg.CSCMatrix
 import breeze.linalg.DenseVector
-import breeze.linalg.SparseVector
 import breeze.linalg.Vector
 import breeze.linalg.norm
 import breeze.linalg.sum
@@ -15,7 +14,7 @@ import breeze.linalg.sum
  */
 object PageRank {
 
-  final val EPSILON = 0.00001
+  final val EPSILON = 0.0000001
   private final val BETA_DEFAULT = 0.8
   object Method extends Enumeration {
     val ITERATIVE, MATRIX = Value
@@ -29,19 +28,34 @@ object PageRank {
    * @return a vector defining the PageRank value for each page/node
    */
   def pagerank(location: String, nPages: Int, nLines: Int = Int.MaxValue,
-    method: Method.Value = PageRank.Method.ITERATIVE): DenseVector[Double] = {
+    method: Method.Value = PageRank.Method.ITERATIVE, beta: Double = BETA_DEFAULT): DenseVector[Double] = {
     val m = MatrixUtils.stochasticMatrix(MatrixUtils.adjMatrix(location, nPages, nLines))
+    //    val m = MatrixUtils.adjMatrix(location, nPages, nLines)
     val rInitial = DenseVector.ones[Double](nPages) :/ nPages.toDouble
 
     if (method == Method.ITERATIVE) {
       println("Using iterative method.")
-      computeRIterative(m, rInitial)
+      computeRIterative(m, rInitial, beta = beta)
     } else if (method == Method.MATRIX) {
       println("Using matrix-based method.")
-      computeRMatrix(m, rInitial)
+      computeRMatrix(m, rInitial, beta = beta)
     } else {
       throw new IllegalArgumentException()
     }
+  }
+
+  /**
+   * Generate a vector of length n with either beta or 0 for dead ends
+   * @param m a CSCMatrix
+   * @param beta  the default beta value for non-dead ends
+   * @return a vector containing beta or 0 for each column of m
+   */
+  def computeBeta(m: CSCMatrix[Double], beta: Double): Vector[Double] = {
+    val v = DenseVector.fill[Double](m.cols, beta)
+    for (i <- Range(0, m.cols).filter(MatrixUtils.outDegree(_, m) == 0)) {
+      v.update(i, 0)
+    }
+    v
   }
 
   /**
@@ -49,12 +63,12 @@ object PageRank {
    *
    * @param m the stochastic adjacency matrix
    * @param r the initial vector R holding the PageRank values for each node/page
-   * @param beta the teleport probability
+   * @param beta one minus the teleport probability
    * @param counter counts the number of iterations
    * @return a vector defining the PageRank value for each page/node
    */
   @deprecated("Use computeRMatrix() instead.")
-  def computeRIterative(m: CSCMatrix[Double], r: DenseVector[Double], beta: Double = BETA_DEFAULT, counter: Int = 1): DenseVector[Double] = {
+  def computeRIterative(m: CSCMatrix[Double], r: DenseVector[Double], beta: Double, counter: Int = 1): DenseVector[Double] = {
     println("Iteration: " + counter)
 
     /* compute r' */
@@ -79,13 +93,13 @@ object PageRank {
    *
    * @param m the stochastic adjacency matrix
    * @param r the initial vector R holding the PageRank values for each node/page
-   * @param beta the teleport probability
+   * @param beta one minus the teleport probability
    * @param counter counts the number of iterations
    * @return a vector defining the PageRank value for each page/node
    */
-  def computeRMatrix(m: CSCMatrix[Double], r: DenseVector[Double], beta: Double = BETA_DEFAULT, counter: Int = 1): DenseVector[Double] = {
+  def computeRMatrix(m: CSCMatrix[Double], r: DenseVector[Double], beta: Double, counter: Int = 1): DenseVector[Double] = {
     println("Iteration: " + counter)
-    val rNew = (m * beta) * r + ((1 - beta) / m.cols)
+    val rNew = (m * beta) * r :+ ((1 - beta) / m.cols)
 
     /* recursion */
     if (PageRank.manhattanDistance(rNew, r) > PageRank.EPSILON)
