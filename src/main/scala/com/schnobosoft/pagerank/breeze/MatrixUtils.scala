@@ -3,6 +3,7 @@ package com.schnobosoft.pagerank.breeze
 import breeze.linalg.CSCMatrix
 import breeze.linalg.SparseVector
 import breeze.linalg.Vector
+import com.schnobosoft.pagerank.FileUtils
 
 /**
  * @author Carsten Schnober

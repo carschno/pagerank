@@ -1,4 +1,4 @@
-package com.schnobosoft.pagerank.breeze
+package com.schnobosoft.pagerank
 import scala.io.Source.fromFile
 
 /**
