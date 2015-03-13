@@ -3,8 +3,6 @@ package com.schnobosoft.pagerank.breeze
 import org.junit.Assert.assertArrayEquals
 import org.junit.Test
 
-import com.schnobosoft.pagerank.breeze.PageRank
-
 import breeze.linalg.DenseVector
 
 /**
