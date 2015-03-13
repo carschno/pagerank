@@ -4,7 +4,6 @@ import breeze.linalg.CSCMatrix
 import breeze.linalg.SparseVector
 import breeze.linalg.Vector
 
-
 /**
  * @author Carsten Schnober
  */
@@ -31,7 +30,7 @@ object MatrixUtils {
    * @return a Sequence of column indizes containing non-zero elements in a row
    */
   def incoming(i: Int, m: CSCMatrix[Double]): Seq[Int] = {
-    m.rowIndices.toList
+    m.rowIndices
       .zipWithIndex.filter { _._1 == i } // tuples with value matching i (row)
       .map { x => m.colPtrs.zipWithIndex.find { y => y._1 > x._2 } }
       .map { x => x.get._2 - 1 }
@@ -53,6 +52,8 @@ object MatrixUtils {
    */
   def stochasticMatrix(m: CSCMatrix[Double]): CSCMatrix[Double] = {
     m.activeIterator.foreach(cell => m.update(cell._1, cell._2 / outDegree(cell._1._2, m)))
+
+    /* TODO: in dead end nodes, set all values to 1/n */
     m
   }
 
@@ -75,7 +76,7 @@ object MatrixUtils {
    */
   @deprecated("Used in iterative approach only.")
   def inDegree(i: Int, m: CSCMatrix[Double]): Int = {
-    m.rowIndices.toList.count { _ == i }
+    m.rowIndices.count { _ == i }
   }
 
   /** Return the sum over all values in a column */
