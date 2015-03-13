@@ -1,6 +1,4 @@
-package com.schnobosoft.pagerank
-
-import java.util.Locale
+package com.schnobosoft.pagerank.breeze
 
 /**
  * Run PageRank on data from {@link https://snap.stanford.edu/data/web-Google.html}.

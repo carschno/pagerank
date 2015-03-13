@@ -2,6 +2,7 @@ package com.schnobosoft.pagerank
 
 import org.junit.Test
 import org.junit.Assert._
+import com.schnobosoft.pagerank.breeze.FileUtils
 
 /**
  * @author Carsten Schnober

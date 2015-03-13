@@ -1,8 +1,10 @@
-package com.schnobosoft.pagerank
+package com.schnobosoft.pagerank.breeze
 
-import breeze.linalg.CSCMatrix
+import com.schnobosoft.pagerank.breeze.FileUtils
 import breeze.linalg.SparseVector
 import breeze.linalg.Vector
+
+import breeze.linalg.CSCMatrix
 
 /**
  * @author Carsten Schnober

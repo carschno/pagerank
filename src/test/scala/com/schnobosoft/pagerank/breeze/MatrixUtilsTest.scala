@@ -1,9 +1,9 @@
-package com.schnobosoft.pagerank
+package com.schnobosoft.pagerank.breeze
 
-import breeze.linalg.DenseVector
-import breeze.linalg.CSCMatrix
 import org.junit.Test
 import org.junit.Assert._
+import breeze.linalg.DenseVector
+import breeze.linalg.CSCMatrix
 
 /**
  * @author Carsten Schnober

@@ -1,12 +1,12 @@
-package com.schnobosoft.pagerank
+package com.schnobosoft.pagerank.breeze
 
 import scala.Range
-
-import breeze.linalg.CSCMatrix
-import breeze.linalg.DenseVector
-import breeze.linalg.Vector
+import com.schnobosoft.pagerank.breeze.MatrixUtils
 import breeze.linalg.norm
 import breeze.linalg.sum
+import breeze.linalg.DenseVector
+import breeze.linalg.Vector
+import breeze.linalg.CSCMatrix
 
 /**
  * Implementation of the PageRank algorithm using Scala and Breeze.

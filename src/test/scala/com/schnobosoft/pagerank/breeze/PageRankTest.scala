@@ -1,9 +1,10 @@
-package com.schnobosoft.pagerank
+package com.schnobosoft.pagerank.breeze
 
 import org.junit.Assert.assertArrayEquals
-import org.junit.Assert.assertEquals
 import org.junit.Test
-import breeze.linalg.CSCMatrix
+
+import com.schnobosoft.pagerank.breeze.PageRank
+
 import breeze.linalg.DenseVector
 
 /**
