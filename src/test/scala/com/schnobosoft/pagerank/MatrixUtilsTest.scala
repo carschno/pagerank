@@ -11,6 +11,8 @@ import org.junit.Assert._
 class MatrixUtilsTest {
   var location = "src/test/resources/test1.txt"
   var location2 = "src/test/resources/test2.txt"
+  var location3 = "src/test/resources/test3.txt"
+
   var nPages = 3
 
   @Test
@@ -54,6 +56,22 @@ class MatrixUtilsTest {
     assertArrayEquals(expectedM.data, m.data, PageRank.EPSILON)
     Range(0, 2).foreach { col => assertEquals(1.0, MatrixUtils.colSum(col, m), 0.001) }
 
+  }
+
+//  @Test
+  def stochasticMatrixTest3 {
+    val builder = new CSCMatrix.Builder[Double](3, 3)
+    builder.add(0, 0, 0.5)
+    builder.add(1, 0, 0.5)
+    builder.add(0, 1, 0.5)
+    builder.add(2, 1, 0.5)
+    builder.add(0, 2, 1d / 3d)
+    builder.add(1, 2, 1d / 3d)
+    builder.add(2, 2, 1d / 3d)
+    val expectedM = builder.result()
+    val m = MatrixUtils.stochasticMatrix(MatrixUtils.adjMatrix(location3, nPages))
+    assertArrayEquals(expectedM.data, m.data, PageRank.EPSILON)
+    Range(0, 2).foreach { col => assertEquals(1.0, MatrixUtils.colSum(col, m), 0.001) }
   }
 
   @Test
